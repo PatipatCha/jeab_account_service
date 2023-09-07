@@ -1,0 +1,26 @@
+{
+    "user_id": "sgoc001",
+    "password": "$2a$12$Vz7yqF4jIDI8VfyYQSp8a.JOZefGN8CNbw4JoIZVVuCwX1RTlg7WS",
+    "permission": [
+        {
+            "menu_id": "$2a$12$8H4pA4R2wfwaXpEsvEUyfuO5dyQLU.TAs6aBFLo8UPY4MKsX9gHA.",
+            "submenu": {
+                "view": true,
+                "create": true,
+                "update": true,
+                "delete": true
+            }
+        },
+        {
+            "menu_id": "$2a$12$8H4pA4R2wfwaXpEsvEUyfuO5dyQLU.TAs6aBFLo8UPY4MKsX9gHA.",
+            "submenu": {
+                "view": true,
+                "create": true,
+                "update": true,
+                "delete": true
+            }
+        }
+    ],
+    "created_at": "2023-09-07T14:10:26.113Z",
+    "created_by": "admin"
+}

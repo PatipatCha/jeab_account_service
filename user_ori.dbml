@@ -1,0 +1,30 @@
+Table user {
+  id integers [PK]
+  username varchar [unique, not null, note: 'for login']
+  email varchar [note: 'for login']
+  mobile varchar [note: 'for login']
+  password varchar [not null]
+  role role [not null]
+  is_active status [not null,note:'params: true false']
+  created_by varchar [note: 'userAdmin']
+  created_at timestamp [not null]
+  updated_at timestamp
+  delete_at timestamp [note: 'soft delete']
+}
+
+Table personal { 
+  id integer [PK]
+  username varchar [unique, not null, note: 'for login']
+  email varchar [note: 'for login']
+  mobile varchar [note: 'for login']
+  id_card varchar [unique, not null]
+  name varchar [not null]
+  surname varchar
+  nickname varchar
+  created_by varchar [note: 'userAdmin']
+  created_at timestamp [not null]
+  updated_at timestamp
+  delete_at timestamp [note: 'soft delete']
+}
+
+Ref: user.username - user_profile.username

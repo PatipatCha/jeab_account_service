@@ -19,7 +19,7 @@ func SignInForMobile(c *fiber.Ctx) error {
 		}
 		return c.JSON(output)
 	}
-	users, _ := services.CheckUserId(mobileNumber)
+	users, _ := services.GetUserId(mobileNumber)
 
 	if users.UserId == "" {
 		output := fiber.Map{

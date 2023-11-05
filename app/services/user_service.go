@@ -1,29 +1,11 @@
 package services
 
 import (
-	"log"
 	"math/rand"
 	"time"
 
-	"github.com/PatipatCha/jeab_ta_service/app/databases"
 	"github.com/PatipatCha/jeab_ta_service/app/model"
 )
-
-func CheckUserId(mobile_number string) (model.UsersEntity, error) {
-	var entity model.UsersEntity
-	db, err := databases.ConnectAccountDB()
-	if err != nil {
-		log.Fatal(err)
-		return entity, err
-	}
-
-	result := db.Table("users").Where("mobile = ?", mobile_number).Where("status = ?", "active").Scan(&entity)
-	if result.RowsAffected <= 0 {
-		return entity, err
-	}
-
-	return entity, nil
-}
 
 func SendOTPServer(mobile_number string) (model.MobileOTPSignInResponse, error) {
 	var res model.MobileOTPSignInResponse

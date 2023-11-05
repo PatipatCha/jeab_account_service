@@ -1,5 +1,28 @@
 package services
 
+import (
+	"log"
+
+	"github.com/PatipatCha/jeab_ta_service/app/databases"
+	"github.com/PatipatCha/jeab_ta_service/app/model"
+)
+
+func GetUserId(mobile_number string) (model.UsersEntity, error) {
+	var entity model.UsersEntity
+	db, err := databases.ConnectAccountDB()
+	if err != nil {
+		log.Fatal(err)
+		return entity, err
+	}
+
+	result := db.Table("users").Where("mobile = ?", mobile_number).Where("status = ?", "active").Scan(&entity)
+	if result.RowsAffected <= 0 {
+		return entity, err
+	}
+
+	return entity, nil
+}
+
 // func SaveData(request model.TimeAttendanceCheckInOutRequest) (model.TimeAttendanceEntity, error) {
 // 	entity := model.TimeAttendanceEntity{
 // 		UserId:        string(request.UserId),

@@ -26,11 +26,10 @@ func main() {
 
 func initLoadEnv() {
 
-	err := godotenv.Load(".message.env")
+	godotenv.Load(".message.env")
 
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
+	godotenv.Load(".services.env")
+
 }
 
 func initLoadPort(app *fiber.App) {

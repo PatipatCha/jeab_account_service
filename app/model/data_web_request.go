@@ -1,5 +1,6 @@
 package model
 
 type WebSignInRequest struct {
-	Mobile string `db:"mobile" json:"mobile"`
+	UserId   string `json:"user_id"`
+	Passcode string `json:"passcode"`
 }

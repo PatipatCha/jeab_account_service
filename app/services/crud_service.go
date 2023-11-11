@@ -1,26 +1,119 @@
 package services
 
 import (
+	"encoding/base64"
 	"log"
+	"os"
+	"strings"
 
 	"github.com/PatipatCha/jeab_ta_service/app/databases"
 	"github.com/PatipatCha/jeab_ta_service/app/model"
 )
 
-func GetUserId(mobile_number string) (model.UsersEntity, error) {
-	var entity model.UsersEntity
+func GetUser(mobile_number string, user_id string, role string) (model.UserProfileEntity, error) {
+	var entity model.UserProfileEntity
 	db, err := databases.ConnectAccountDB()
 	if err != nil {
 		log.Fatal(err)
 		return entity, err
 	}
 
-	result := db.Table("users").Where("mobile = ?", mobile_number).Where("status = ?", "active").Scan(&entity)
+	var raw = ""
+	if role != "" {
+		raw = "users.role = " + role
+	}
+
+	var result = db.Table("users").Select("users.user_id, profile.firstname, profile.surname, users.mobile, profile.image_url, users.role, pdpa.personal_pdpa, TO_CHAR(pdpa.personal_expire_date, 'YYYY-MM-DD') as personal_expire_date").Joins("LEFT JOIN profile on profile.user_id = users.user_id").Joins("LEFT JOIN pdpa on pdpa.user_id = users.user_id").Where("users.user_id = ?", user_id).Or("users.mobile = ?", mobile_number).Where("users.status = ?", "active").Where(raw).Scan(&entity)
 	if result.RowsAffected <= 0 {
 		return entity, err
 	}
 
 	return entity, nil
+}
+
+func FindUser(user_id string) bool {
+	var entity model.UserProfileEntity
+
+	db, err := databases.ConnectAccountDB()
+	if err != nil {
+		log.Fatal(err)
+		return false
+	}
+
+	db.Table("users").Where("users.user_id = ?", user_id).First(&entity)
+
+	return entity.UserId != ""
+}
+
+func CheckUserPasscode(user_id string, passcode string) (model.WebUserProfileResponse, error) {
+	var output model.WebUserProfileResponse
+
+	db, err := databases.ConnectAccountDB()
+	if err != nil {
+		log.Fatal(err)
+		return output, err
+	}
+
+	userId := strings.ToUpper(user_id)
+
+	txtBytes := []byte(passcode)
+	passCode := base64.StdEncoding.EncodeToString(txtBytes)
+
+	db.Table("users").Select("profile.firstname, profile.surname, users.mobile, profile.image_url, users.role").Joins("LEFT JOIN profile on profile.user_id = users.user_id").Joins("LEFT JOIN passcode on passcode.user_id = users.user_id").Where("users.user_id = ?", userId).Where("passcode.passcode = ?", passCode).Where("users.status = ?", "active").Scan(&output)
+
+	return output, nil
+}
+
+// func GetProfile(mobile_number string, user_id string) (model.ProfileEntity, error) {
+// 	var entity model.ProfileEntity
+// 	db, err := databases.ConnectAccountDB()
+// 	if err != nil {
+// 		log.Fatal(err)
+// 		return entity, err
+// 	}
+
+// 	result := db.Table("profile").Select("profile.user_id, profile.firstname, profile.surname, profile.image_url, users_pdpa.personal_pdpa, TO_CHAR(users_pdpa.personal_expire_date, 'YYYY-MM-DD') as personal_expire_date").Joins("LEFT JOIN users_pdpa on users_pdpa.user_id = profile.user_id").Where("profile.user_id = ?", user_id).Or("profile.mobile = ?", mobile_number).First(&entity)
+// 	if result.RowsAffected <= 0 {
+// 		return entity, err
+// 	}
+
+// 	return entity, nil
+
+// }
+
+func UpdatePDPA(existingPDPA string, request model.PDPARequest) (string, error) {
+	var res = "INSERT SUCCESS"
+	userId := string(request.UserId)
+	personalPDPA := string(request.PersonalPDPA)
+	personalExpireDate := ConvertTextExpireDate(3)
+
+	entity := model.PDPAEntity{
+		UserId:             userId,
+		PersonalPDPA:       personalPDPA,
+		PersonalExpireDate: personalExpireDate,
+		CreatedBy:          userId,
+	}
+
+	db, err := databases.ConnectAccountDB()
+	if err != nil {
+		log.Fatal(err)
+		return os.Getenv("ERROR_DB"), err
+	}
+
+	if existingPDPA != "" {
+		if err := db.Table("pdpa").Where("pdpa.user_id = ?", userId).Updates(entity).Error; err != nil {
+			log.Fatal(err)
+			return "UPDATE ERROR", err
+		}
+		res = "UPDATE SUCCESS"
+	} else {
+		if err := db.Table("pdpa").Create(&entity).Error; err != nil {
+			log.Fatal(err)
+			return "INSERT ERROR", err
+		}
+	}
+
+	return res, nil
 }
 
 // func SaveData(request model.TimeAttendanceCheckInOutRequest) (model.TimeAttendanceEntity, error) {

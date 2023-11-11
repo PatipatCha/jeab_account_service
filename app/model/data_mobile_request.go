@@ -1,11 +1,17 @@
 package model
 
 type MobileSignInRequest struct {
-	Mobile string `db:"mobile" json:"mobile"`
+	Mobile string `json:"mobile"`
 }
 
 type MobileOTPSignInRequest struct {
-	Mobile    string `db:"mobile" json:"mobile"`
-	OTP       string `db:"otp" json:"otp"`
-	VerifyRef string `json:"verify_ref"`
+	MobileSignInRequest
+	MobileOTPSignInResponse
+	OTP   string `json:"otp_code"`
+	Phone string `json:"phone"`
+}
+
+type PDPARequest struct {
+	UserId       string `json:"user_id"`
+	PersonalPDPA string `json:"personal_pdpa"`
 }

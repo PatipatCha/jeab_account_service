@@ -1,0 +1,7 @@
+{
+    "thunder-client.customLocation": "/Users/patipat/JEAB/Project/tc-data/thunder-tests",
+    "azureFunctions.deploySubpath": ".",
+    "azureFunctions.projectLanguage": "Custom",
+    "azureFunctions.projectRuntime": "~4",
+    "debug.internalConsoleOptions": "neverOpen"
+}

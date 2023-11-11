@@ -1,12 +1,9 @@
 package model
 
-type WebSignInResponse struct {
-	Mobile  string               `json:"mobile"`
-	Data    WebOTPSignInResponse `json:"data"`
-	Message string               `json:"message"`
-}
-
-type WebOTPSignInResponse struct {
-	VerifyRef string `json:"verify_ref"`
-	Status    string `json:"status"`
+type WebUserProfileResponse struct {
+	Firstname string `db:"firstname" json:"firstname"`
+	Surname   string `db:"surname" json:"surname"`
+	ImageUrl  string `db:"image_url" json:"image_url"`
+	Mobile    string `db:"mobile" json:"mobile"`
+	Role      string `db:"role" json:"role"`
 }

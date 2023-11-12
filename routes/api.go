@@ -9,19 +9,38 @@ import (
 func SetupApiRoutes(app *fiber.App, store *session.Store) {
 
 	api := app.Group("/api")
+	v1 := api.Group("/v1")
 
 	//
 	// *SignIn Mobile
 	api.Post("/v1/signin", controller.SignIn)
 	api.Post("/v1/validate-otp", controller.VaildOTP)
-	api.Post("/v1/update-pdpa", controller.UpdatePDPA)
+	api.Post("/v1/pdpa", controller.UpdatePDPA)
 	//
-	// *SignIn Web
-	api.Post("/v1/signin-jmaster", controller.SignInForJMaster)
+	//
+
+	// *JGuard
+	// SignIn
+	jguard := v1.Group("/jguard")
+	jguard.Post("/signin", controller.SignIn)
+	jguard.Post("/validate-otp", controller.VaildOTP)
+	//
+	// PDPA
+	jguard.Post("/pdpa", controller.UpdatePDPA)
+	//
+	//
+
+	// *JMaster
+	// **SignIn
+	jmaster := v1.Group("/jmaster")
+	jmaster.Post("/signin", controller.SignInForJMaster)
+	jmaster.Get("/pdpa", controller.GetPDPA)
+	//
 	//
 
 	// *Profile
-	api.Post("/v1/get-profile", controller.GetProfile)
+	// profile := v1.Group("/profile")
+	// profile.Post("/", controller.GetProfile)
 	//
 
 }

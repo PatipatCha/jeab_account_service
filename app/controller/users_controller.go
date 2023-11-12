@@ -9,6 +9,11 @@ import (
 )
 
 func SignIn(c *fiber.Ctx) error {
+	var rawBody = model.MobileSignInRequest{}
+	if err := c.BodyParser(&rawBody); err != nil {
+		return err
+	}
+
 	// check mobile value
 	mobileNumber := c.Query("mobile")
 	if mobileNumber == "" {
@@ -21,6 +26,9 @@ func SignIn(c *fiber.Ctx) error {
 	}
 
 	// check mobile number
+	if rawBody.Mobile != "" {
+		mobileNumber = rawBody.Mobile
+	}
 	users, _ := services.GetUser(mobileNumber, "", "")
 	if users.UserId == "" {
 		output := fiber.Map{

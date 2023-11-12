@@ -40,7 +40,7 @@ func FindUser(user_id string) bool {
 		return false
 	}
 
-	db.Table("users").Where("users.user_id = ?", user_id).First(&entity)
+	db.Table("users").Where("users.user_id = ?", user_id).Where("users.role = ?", "master").First(&entity)
 
 	return entity.UserId != ""
 }

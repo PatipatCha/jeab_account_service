@@ -5,7 +5,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func GetProfile(c *fiber.Ctx) error {
+func GetPDPA(c *fiber.Ctx) error {
 	userId := c.Query("user_id")
 	user, _ := services.GetUser("", userId, "")
 	res := fiber.Map{

@@ -31,7 +31,7 @@ func GetUser(mobile_number string, user_id string, role string) (model.UserProfi
 	return entity, nil
 }
 
-func FindUser(user_id string) bool {
+func FindUser(user_id string, role string) bool {
 	var entity model.UserProfileEntity
 
 	db, err := databases.ConnectAccountDB()
@@ -40,7 +40,7 @@ func FindUser(user_id string) bool {
 		return false
 	}
 
-	db.Table("users").Where("users.user_id = ?", user_id).Where("users.role = ?", "master").First(&entity)
+	db.Table("users").Where("users.user_id = ?", user_id).Where("users.role = ?", role).First(&entity)
 
 	return entity.UserId != ""
 }
@@ -114,6 +114,53 @@ func UpdatePDPA(existingPDPA string, request model.PDPARequest) (string, error) 
 	}
 
 	return res, nil
+}
+
+func UpdateProfile(userId string, request model.UserProfileRequest) (string, error) {
+
+	db, err := databases.ConnectAccountDB()
+	if err != nil {
+		log.Fatal(err)
+		return os.Getenv("ERROR_DB"), err
+	}
+
+	var entity = model.ProfileEntity{}
+	entity.Firstname = request.Firstname
+	entity.Surname = request.Surname
+
+	if err := db.Table("profile").Where("user_id = ?", userId).Updates(&entity).Error; err != nil {
+		return os.Getenv("UPDATE_PROFILE_ERROR"), nil
+	}
+
+	return os.Getenv("UPDATE_PROFILE_SUCCESS"), nil
+}
+
+func UpdateMobile(userId string, request model.MobileOTPRequest) (string, error) {
+	msg := os.Getenv("UPDATE_PROFILE_SUCCESS")
+
+	db, err := databases.ConnectAccountDB()
+	if err != nil {
+		log.Fatal(err)
+		return os.Getenv("ERROR_DB"), err
+	}
+
+	tx := db.Begin()
+
+	if err := tx.Table("users").Where("user_id = ?", userId).Where("mobile = ?", request.Mobile).Update("mobile", request.NewMobile).Error; err != nil {
+		tx.Rollback()
+		log.Fatal(err)
+		msg = os.Getenv("UPDATE_USER_ERROR")
+	}
+
+	if err := tx.Table("profile").Where("user_id = ?", userId).Where("mobile = ?", request.Mobile).Update("mobile", request.NewMobile).Error; err != nil {
+		tx.Rollback()
+		log.Fatal(err)
+		msg = os.Getenv("UPDATE_PROFILE_ERROR")
+	}
+
+	tx.Commit()
+
+	return msg, nil
 }
 
 // func SaveData(request model.TimeAttendanceCheckInOutRequest) (model.TimeAttendanceEntity, error) {

@@ -15,11 +15,12 @@ type UsersEntity struct {
 
 type ProfileEntity struct {
 	gorm.Model
-	UserId       string `db:"user_id" json:"user_id"`
-	Firstname    string `db:"firstname" json:"firstname"`
-	Surname      string `db:"surname" json:"surname"`
-	ImageUrl     string `db:"image_url" json:"image_url"`
-	PersonalPDPA string `db:"personal_pdpa" json:"personal_pdpa"`
+	UserId    string `db:"user_id" json:"user_id"`
+	Firstname string `db:"firstname" json:"firstname"`
+	Surname   string `db:"surname" json:"surname"`
+	ImageUrl  string `db:"image_url" json:"image_url"`
+	Mobile    string `db:"mobile" json:"mobile"`
+	CreatedBy string `db:"created_by" json:"created_by"`
 }
 
 type PDPAEntity struct {

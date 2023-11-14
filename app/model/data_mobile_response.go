@@ -8,3 +8,7 @@ type MobileSignInResponse struct {
 	Data    MobileOTPSignInResponse `json:"data"`
 	Message string                  `json:"message"`
 }
+
+type UserProfileResponse struct {
+	UserProfileRequest
+}

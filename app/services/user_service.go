@@ -28,7 +28,7 @@ import (
 // 	return string(result)
 // }
 
-func GenUserId() string {
+func GenUserId(role string) string {
 	// รับเวลาปัจจุบันในรูปแบบ Unix timestamp แบบ nanoseconds
 	currentTimeNano := time.Now().UnixNano()
 
@@ -40,9 +40,6 @@ func GenUserId() string {
 
 	// ตัดส่วนที่เกินออกเพื่อให้ได้ขนาดที่ต้องการ (6 ตัวอักษร)
 	userIDPart := encodedTime[:6]
-
-	// กำหนด role สำหรับผู้ใช้
-	role := "MASTER"
 
 	// รวม User ID กับ role
 	userID := fmt.Sprintf("%s-%s", userIDPart, role)

@@ -46,7 +46,7 @@ func SendOTPService(mobileNumber string) (model.MobileOTPSignInResponse, error) 
 
 }
 
-func VaildateOTPService(postData model.MobileOTPSignInRequest) (bool, string, error) {
+func VaildateOTPService(postData model.MobileOTPRequest) (bool, string, error) {
 	var baseUrl = os.Getenv("MESSAGE_SERVICE_URL") + os.Getenv("MESSAGE_SERVICE_VAILDATE_OTP_URL")
 	jsonBody, _ := json.Marshal(postData)
 	response, err := http.Post(baseUrl, "application/json", bytes.NewBuffer(jsonBody))

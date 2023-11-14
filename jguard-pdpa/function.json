@@ -7,7 +7,7 @@
       "name": "req",
       "route": "v1/jguard/pdpa",
       "methods": [
-        "post"
+        "put"
       ]
     },
     {

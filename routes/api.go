@@ -16,8 +16,9 @@ func SetupApiRoutes(app *fiber.App, store *session.Store) {
 	jguard.Post("/signin", controller.SignInAndChangeMobileHandler)
 	jguard.Post("/validate-otp", controller.VaildOTPHandler)
 	jguard.Put("/pdpa", controller.UpdatePDPAHandler)
-	jguard.Put("/profile", controller.UpdateProfileHandler)
 	jguard.Put("/change-mobile", controller.SignInAndChangeMobileHandler)
+	jguard.Put("/profile", controller.UpdateProfileHandler)
+	jguard.Get("/profile", controller.GetUserHandler)
 
 	// *JMaster
 	jmaster := v1.Group("/jmaster")

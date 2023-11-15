@@ -100,20 +100,25 @@ func VaildOTPHandler(c *fiber.Ctx) error {
 }
 
 func GetUserHandler(c *fiber.Ctx) error {
-	userId := c.Query("user_id")
-	mobile := c.Query("mobile")
-	user, _ := services.GetUser(mobile, userId, "")
 	res := fiber.Map{
-		"user_id": userId,
-		"data":    user,
+		"data":    fiber.Map{},
 		"message": os.Getenv("USER_LIST"),
 	}
-	return c.Status(200).JSON(res)
-}
 
-func GenId(c *fiber.Ctx) error {
-	res := services.GenUserId("MASTER")
-	return c.JSON(res)
+	userId := c.Query("user_id")
+	mobile := c.Query("mobile")
+	if userId != "" {
+		res["user_id"] = userId
+	} else {
+		res["mobile"] = mobile
+	}
+
+	if userId != "" || mobile != "" {
+		user, _ := services.GetUser(mobile, userId, "")
+		res["data"] = user
+	}
+
+	return c.Status(200).JSON(res)
 }
 
 func GetPDPAHandler(c *fiber.Ctx) error {
@@ -198,3 +203,8 @@ func UpdateProfileHandler(c *fiber.Ctx) error {
 	}
 	return c.Status(200).JSON(res)
 }
+
+// func GenId(c *fiber.Ctx) error {
+// 	res := services.GenUserId("MASTER")
+// 	return c.JSON(res)
+// }

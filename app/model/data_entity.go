@@ -40,4 +40,5 @@ type UserProfileEntity struct {
 	Role               string `db:"role" json:"role"`
 	PersonalPDPA       string `db:"personal_pdpa" json:"personal_pdpa"`
 	PersonalExpireDate string `db:"personal_expire_date" json:"personal_expire_date"`
+	SeocId             string `db:"seoc_id" json:"seoc_id"`
 }

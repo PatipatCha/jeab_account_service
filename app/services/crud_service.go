@@ -2,6 +2,7 @@ package services
 
 import (
 	"encoding/base64"
+	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -23,7 +24,8 @@ func GetUser(mobile_number string, user_id string, role string) (model.UserProfi
 		raw = "users.role = " + role
 	}
 
-	var result = db.Table("users").Select("users.user_id, profile.firstname, profile.surname, users.mobile, profile.image_url, users.role, pdpa.personal_pdpa, TO_CHAR(pdpa.personal_expire_date, 'YYYY-MM-DD') as personal_expire_date").Joins("LEFT JOIN profile on profile.user_id = users.user_id").Joins("LEFT JOIN pdpa on pdpa.user_id = users.user_id").Where("users.user_id = ?", user_id).Or("users.mobile = ?", mobile_number).Where("users.status = ?", "active").Where(raw).Scan(&entity)
+	var result = db.Table("users").Select("users.user_id, profile.firstname, profile.surname, users.mobile, profile.image_url, users.role, pdpa.personal_pdpa, TO_CHAR(pdpa.personal_expire_date, 'YYYY-MM-DD') as personal_expire_date, staff.seoc_id as seoc_id").Joins("LEFT JOIN profile on profile.user_id = users.user_id").Joins("LEFT JOIN pdpa on pdpa.user_id = users.user_id").Joins("LEFT JOIN staff on staff.user_id = users.user_id").Where("users.user_id = ?", user_id).Or("users.mobile = ?", mobile_number).Where("users.status = ?", "active").Where(raw).Scan(&entity)
+	fmt.Println(entity)
 	if result.RowsAffected <= 0 {
 		return entity, err
 	}

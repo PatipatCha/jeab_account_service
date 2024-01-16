@@ -16,3 +16,12 @@ func AzureAccountDBConfig() *Config {
 		Password: "MTIvMDEvMjAyM0FBQQ",
 	}
 }
+
+func MasterDBConfig() *Config {
+	return &Config{
+		Host:     "jeab-stg-server.postgres.database.azure.com",
+		Database: "master_db",
+		User:     "amVhYi10ZXN0LXNlcnZlc",
+		Password: "MTIvMDEvMjAyM0FBQQ",
+	}
+}

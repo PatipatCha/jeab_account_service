@@ -70,35 +70,6 @@ func CheckUserPasscode(user_id string, passcode string) (model.WebUserProfileRes
 	return output, nil
 }
 
-func CheckUserJMasterPassword(usename string, password string) (model.WebUserProfileResponse, error) {
-	var user model.WebUserProfileResponse
-
-	db, err := databases.ConnectAccountDB()
-	if err != nil {
-		log.Fatal(err)
-		return user, err
-	}
-
-	userId := strings.ToUpper(usename)
-
-	txtBytes := []byte(password)
-	passCode := base64.StdEncoding.EncodeToString(txtBytes)
-
-	db.Table("operation_center_user").
-		Joins("LEFT JOIN operation_center_password on operation_center_password.jeab_id = operation_center_user.jeab_id").
-		Where("operation_center_user.username = ? AND operation_center_password.password = ?", userId, passCode).
-		Where("operation_center_user.role = ?", "master").
-		Where("operation_center_user.status = ?", "active").
-		Scan(&user)
-
-	user.Firstname = "Master"
-	user.Surname = "Master"
-	user.Mobile = "0999999999"
-	user.ImageUrl = "Master.png"
-
-	return user, nil
-}
-
 // func GetProfile(mobile_number string, user_id string) (model.ProfileEntity, error) {
 // 	var entity model.ProfileEntity
 // 	db, err := databases.ConnectAccountDB()

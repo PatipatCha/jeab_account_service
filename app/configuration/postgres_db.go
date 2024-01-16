@@ -10,9 +10,9 @@ type Config struct {
 
 func AzureAccountDBConfig() *Config {
 	return &Config{
-		Host:     "jeab-test-server.postgres.database.azure.com",
-		Database: "account_db",
-		User:     "amVhYi10ZXN0LXNlcnZlcg",
-		Password: "amd1YXJk",
+		Host:     "jeab-stg-server.postgres.database.azure.com",
+		Database: "operation_center_db",
+		User:     "amVhYi10ZXN0LXNlcnZlc",
+		Password: "MTIvMDEvMjAyM0FBQQ",
 	}
 }

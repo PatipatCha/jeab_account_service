@@ -1,11 +1,12 @@
 package controller
 
 import (
+	"fmt"
 	"os"
 	"strings"
 
-	"github.com/PatipatCha/jeab_ta_service/app/model"
-	"github.com/PatipatCha/jeab_ta_service/app/services"
+	"github.com/PatipatCha/jeab_account_service/app/model"
+	"github.com/PatipatCha/jeab_account_service/app/services"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -80,11 +81,13 @@ func VaildOTPHandler(c *fiber.Ctx) error {
 	}
 
 	userId := c.Query("user_id")
+	fmt.Println(userId)
 	if userId != "" {
 		res["user_id"] = userId
 		// 4.1) by user id
 		if vaild {
 			msg, _ := services.UpdateMobile(userId, rawBody)
+
 			res["message"] = msg
 		}
 	} else {

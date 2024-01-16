@@ -1,4 +1,4 @@
-module github.com/PatipatCha/jeab_ta_service
+module github.com/PatipatCha/jeab_account_service
 
 go 1.20
 

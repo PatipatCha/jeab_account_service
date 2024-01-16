@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/PatipatCha/jeab_ta_service/routes"
+	"github.com/PatipatCha/jeab_account_service/routes"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/session"
 

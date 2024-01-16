@@ -4,8 +4,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/PatipatCha/jeab_ta_service/app/model"
-	"github.com/PatipatCha/jeab_ta_service/app/services"
+	"github.com/PatipatCha/jeab_account_service/app/model"
+	"github.com/PatipatCha/jeab_account_service/app/services"
 	"github.com/gofiber/fiber/v2"
 )
 

@@ -3,11 +3,12 @@ package services
 import (
 	"bytes"
 	"encoding/json"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"os"
 
-	"github.com/PatipatCha/jeab_ta_service/app/model"
+	"github.com/PatipatCha/jeab_account_service/app/model"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -54,7 +55,7 @@ func VaildateOTPService(postData model.MobileOTPRequest) (bool, string, error) {
 		return false, "", nil
 	}
 	defer response.Body.Close()
-	responseBody, err := ioutil.ReadAll(response.Body)
+	responseBody, err := io.ReadAll(response.Body)
 	var responseData model.OTPVaildateResponseData
 	json.Unmarshal(responseBody, &responseData)
 

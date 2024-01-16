@@ -3,7 +3,7 @@ package databases
 import (
 	"fmt"
 
-	"github.com/PatipatCha/jeab_ta_service/app/configuration"
+	"github.com/PatipatCha/jeab_account_service/app/configuration"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"

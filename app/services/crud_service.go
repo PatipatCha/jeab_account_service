@@ -7,8 +7,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/PatipatCha/jeab_ta_service/app/databases"
-	"github.com/PatipatCha/jeab_ta_service/app/model"
+	"github.com/PatipatCha/jeab_account_service/app/databases"
+	"github.com/PatipatCha/jeab_account_service/app/model"
 )
 
 func GetUser(mobile_number string, user_id string, role string) (model.UserProfileEntity, error) {
@@ -24,7 +24,11 @@ func GetUser(mobile_number string, user_id string, role string) (model.UserProfi
 		raw = "users.role = " + role
 	}
 
-	var result = db.Table("users").Select("users.user_id, profile.firstname, profile.surname, users.mobile, profile.image_url, users.role, pdpa.personal_pdpa, TO_CHAR(pdpa.personal_expire_date, 'YYYY-MM-DD') as personal_expire_date, staff.seoc_id as seoc_id").Joins("LEFT JOIN profile on profile.user_id = users.user_id").Joins("LEFT JOIN pdpa on pdpa.user_id = users.user_id").Joins("LEFT JOIN staff on staff.user_id = users.user_id").Where("users.user_id = ?", user_id).Or("users.mobile = ?", mobile_number).Where("users.status = ?", "active").Where(raw).Scan(&entity)
+	sqlSelect := "users.user_id, profile.firstname, profile.surname, users.mobile, profile.image_url, users.role, pdpa.personal_pdpa, TO_CHAR(pdpa.personal_expire_date, 'YYYY-MM-DD') as personal_expire_date, staff.seoc_id as seoc_id"
+	sqlJoinProfle := "LEFT JOIN profile on profile.user_id = users.user_id"
+	sqlJoinPdpa := "LEFT JOIN pdpa on pdpa.user_id = users.user_id"
+
+	var result = db.Table("users").Select(sqlSelect).Joins(sqlJoinProfle).Joins(sqlJoinPdpa).Joins("LEFT JOIN staff on staff.user_id = users.user_id").Where("users.user_id = ?", user_id).Or("users.mobile = ?", mobile_number).Where("users.status = ?", "active").Where(raw).Scan(&entity)
 	fmt.Println(entity)
 	if result.RowsAffected <= 0 {
 		return entity, err
@@ -64,6 +68,35 @@ func CheckUserPasscode(user_id string, passcode string) (model.WebUserProfileRes
 	db.Table("users").Select("profile.firstname, profile.surname, users.mobile, profile.image_url, users.role").Joins("LEFT JOIN profile on profile.user_id = users.user_id").Joins("LEFT JOIN passcode on passcode.user_id = users.user_id").Where("users.user_id = ?", userId).Where("passcode.passcode = ?", passCode).Where("users.status = ?", "active").Scan(&output)
 
 	return output, nil
+}
+
+func CheckUserJMasterPassword(usename string, password string) (model.WebUserProfileResponse, error) {
+	var user model.WebUserProfileResponse
+
+	db, err := databases.ConnectAccountDB()
+	if err != nil {
+		log.Fatal(err)
+		return user, err
+	}
+
+	userId := strings.ToUpper(usename)
+
+	txtBytes := []byte(password)
+	passCode := base64.StdEncoding.EncodeToString(txtBytes)
+
+	db.Table("operation_center_user").
+		Joins("LEFT JOIN operation_center_password on operation_center_password.jeab_id = operation_center_user.jeab_id").
+		Where("operation_center_user.username = ? AND operation_center_password.password = ?", userId, passCode).
+		Where("operation_center_user.role = ?", "master").
+		Where("operation_center_user.status = ?", "active").
+		Scan(&user)
+
+	user.Firstname = "Master"
+	user.Surname = "Master"
+	user.Mobile = "0999999999"
+	user.ImageUrl = "Master.png"
+
+	return user, nil
 }
 
 // func GetProfile(mobile_number string, user_id string) (model.ProfileEntity, error) {
